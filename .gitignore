@@ -1,0 +1,7 @@
+# CMake
+out/
+bin/
+build/
+.cache/
+
+compile_commands.json
