@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Vexel/STL.hpp"
+#include <Vexel/Base.hpp>
+#include <Vexel/STL.hpp>
 
 namespace Vex
 {
@@ -16,10 +17,15 @@ namespace Vex
         RefCount() = default;
         virtual ~RefCount() = default;
 
-        RefCount(const RefCount& other) = delete;
-        RefCount(RefCount&& rhs) noexcept = delete;
-        RefCount& operator=(const RefCount& other) = delete;
-        RefCount& operator=(RefCount&& rhs) noexcept = delete;
+        RefCount(const RefCount& other) {}
+        RefCount(RefCount&& rhs) noexcept { VEX_ASSERT(false, "Moving referenced object is unsafe"); }
+        RefCount& operator=(const RefCount& other) { return *this; }
+
+        RefCount& operator=(RefCount&& rhs)
+        {
+            VEX_ASSERT(false, "Moving referenced object is unsafe");
+            return *this;
+        }
 
         uint16_t GetRefCount() { return m_ControlBlock.RefCount; }
         uint16_t GetScopeCount() { return m_ControlBlock.ScopeCount; }
