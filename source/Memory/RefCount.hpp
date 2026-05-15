@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ClawSTL.hpp"
+#include "Vexel/STL.hpp"
 
-namespace Claw
+namespace Vex
 {
-    struct MemoryControlBlock
+    struct MemoryControlBlock final
     {
         uint32_t RefCount = 0;
         uint32_t WeakCount = 0;
@@ -35,7 +35,9 @@ namespace Claw
       private:
         mutable MemoryControlBlock m_ControlBlock{};
 
+        template <typename T>
         friend class Ref;
+        template <typename T>
         friend class Weak;
     };
-} // namespace Claw
+} // namespace Vexel

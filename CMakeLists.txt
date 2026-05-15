@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(ClawUtils LANGUAGES CXX)
+project(VexelUtils LANGUAGES CXX)
 
 # LIBRARY
 
@@ -9,21 +9,21 @@ file(GLOB_RECURSE CLAWUTILS_SRC
 )
 
 add_library(
-    ClawUtils 
+    VexelUtils 
 
     INTERFACE
     ${CLAWUTILS_SRC}
 )
 
 target_compile_features(
-    ClawUtils
+    VexelUtils
 
     INTERFACE
         cxx_std_20
 )
 
 target_include_directories(
-    ClawUtils
+    VexelUtils
 
     INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -31,10 +31,10 @@ target_include_directories(
 )
 
 target_precompile_headers(
-    ClawUtils
+    VexelUtils
 
     INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/ClawSTL.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Vexel/STL.hpp
 )
 
 # TESTING
@@ -56,16 +56,16 @@ file(GLOB_RECURSE CLAWUTILS_TESTS_SRC
 )
 
 add_executable(
-    ClawUtilsTests
+    VexelUtilsTests
 
     ${CLAWUTILS_TESTS_SRC}
 )
 
-target_link_libraries(ClawUtilsTests
+target_link_libraries(VexelUtilsTests
     PRIVATE
-        ClawUtils
+        VexelUtils
         GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(ClawUtilsTests)
+gtest_discover_tests(VexelUtilsTests)
