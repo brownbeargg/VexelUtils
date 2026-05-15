@@ -3,7 +3,7 @@ project(VexelUtils LANGUAGES CXX)
 
 # LIBRARY
 
-file(GLOB_RECURSE CLAWUTILS_SRC
+file(GLOB_RECURSE VEXELUTILS_SRC
     CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp
 )
@@ -12,7 +12,7 @@ add_library(
     VexelUtils 
 
     STATIC
-    ${CLAWUTILS_SRC}
+    ${VEXELUTILS_SRC}
 )
 
 target_compile_features(
