@@ -14,29 +14,24 @@ class A : public Vex::RefCount
 
 template class Vex::Weak<A>;
 
-TEST(Weak, StartsWithOneRef)
-{
-    Vex::Weak<A> a = Vex::CreateWeak<A>(5);
-    EXPECT_EQ(a->GetTotalPtrCount(), 1);
-    EXPECT_EQ(a->GetWeakCount(), 1);
-}
-
-Vex::Weak<A> a = Vex::CreateWeak<A>(69);
+static Vex::Ref<A> a = Vex::CreateRef<A>(69);
 
 TEST(Weak, WeakCountGoesUpAndDown)
 {
     {
-        Vex::Weak<A> b = a;
-        EXPECT_EQ(b->GetWeakCount(), 2);
-        EXPECT_EQ(a->GetWeakCount(), 2);
+        Vex::Weak<A> b = Vex::Weak<A>(a);
+        EXPECT_EQ(b->GetWeakCount(), 1);
+        EXPECT_EQ(a->GetWeakCount(), 1);
+        EXPECT_EQ(b->GetRefCount(), 1);
+        EXPECT_EQ(a->GetRefCount(), 1);
     }
 
-    EXPECT_EQ(a->GetWeakCount(), 1);
+    EXPECT_EQ(a->GetWeakCount(), 0);
 }
 
 TEST(Weak, Resets)
 {
-    Vex::Weak<A> b = a;
+    Vex::Weak<A> b = Vex::Weak(a);
     b.Reset(new A(420));
     EXPECT_EQ(b->val, 420);
     EXPECT_EQ(b->val, 420);
@@ -44,8 +39,9 @@ TEST(Weak, Resets)
 
 TEST(Weak, Locks)
 {
-    Vex::Ref<A> b = a.Lock();
-    EXPECT_EQ(a->GetRefCount(), 1);
+    Vex::Weak<A> b = Vex::Weak(a);
+    Vex::Ref<A> c = b.Lock();
+    EXPECT_EQ(a->GetRefCount(), 2);
     EXPECT_EQ(a->GetWeakCount(), 1);
-    // EXPECT_EQ(a->GetTotalPtrCount(), 2);
+    EXPECT_EQ(a->GetTotalPtrCount(), 3);
 }

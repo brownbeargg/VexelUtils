@@ -54,9 +54,11 @@ namespace Vex
     {
         Destroy();
 
-        m_Data = data;
-        if (m_Data)
+        if (data)
+        {
+            m_Data = data;
             m_Data->IncRefCount();
+        }
 
         return *this;
     }

@@ -21,7 +21,7 @@ TEST(Ref, StartsWithOneRef)
     EXPECT_EQ(a->GetRefCount(), 1);
 }
 
-Vex::Ref<A> a = Vex::CreateRef<A>(69);
+static Vex::Ref<A> a = Vex::CreateRef<A>(69);
 
 TEST(Ref, RefCountGoesUpAndDown)
 {

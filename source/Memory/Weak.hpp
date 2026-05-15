@@ -44,7 +44,7 @@ namespace Vex
         const T* Get() const { return m_Data; }
 
       private:
-        Weak<T>& Move(Weak<T>&&);
+        Weak<T>& Move(Weak<T>&& rhs);
 
       private:
         T* m_Data = nullptr;
@@ -58,9 +58,11 @@ namespace Vex
     {
         Destroy();
 
-        m_Data = data;
-        if (m_Data)
+        if (data)
+        {
+            m_Data = data;
             m_Data->IncWeakCount();
+        }
 
         return *this;
     }
@@ -72,8 +74,6 @@ namespace Vex
             return;
 
         m_Data->DecWeakCount();
-        if (m_Data->GetTotalPtrCount() == 0)
-            delete m_Data;
 
         m_Data = nullptr;
     }
