@@ -11,29 +11,31 @@ file(GLOB_RECURSE CLAWUTILS_SRC
 add_library(
     VexelUtils 
 
-    INTERFACE
+    STATIC
     ${CLAWUTILS_SRC}
 )
 
 target_compile_features(
     VexelUtils
 
-    INTERFACE
+    PUBLIC
         cxx_std_20
 )
 
 target_include_directories(
     VexelUtils
 
-    INTERFACE
+    PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/source
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include
 )
 
 target_precompile_headers(
     VexelUtils
 
-    INTERFACE
+    PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Vexel/STL.hpp
 )
 
