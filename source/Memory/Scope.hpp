@@ -16,6 +16,20 @@ namespace Vex
         Scope& operator=(const Scope<T>&) = delete;
         Scope& operator=(Scope<T>&& rhs) { return Move(std::move(rhs)); }
 
+        template <typename U>
+            requires std::is_convertible_v<U*, T*>
+        Scope(Scope<U>&& rhs)
+        {
+            Move(std::move(rhs));
+        }
+
+        template <typename U>
+            requires std::is_convertible_v<U*, T*>
+        Scope<T>& operator=(Scope<U>&& rhs)
+        {
+            Move(std::move(rhs));
+        }
+
         const T& operator*() const { return *m_Data; }
         T& operator*() { return *m_Data; }
         const T* operator->() const { return m_Data; }
@@ -29,8 +43,16 @@ namespace Vex
         T* Get() { return m_Data; }
         const T* Get() const { return m_Data; }
 
+        template <typename... Args>
+        static Scope<T> Create(Args&&... args)
+        {
+            return Scope<T>(new T(std::forward<Args>(args)...));
+        }
+
       private:
-        Scope<T>& Move(Scope<T>&& rhs);
+        template <typename U>
+            requires std::is_convertible_v<U*, T*>
+        Scope<T>& Move(Scope<U>&& rhs);
 
         T* m_Data = nullptr;
     };
@@ -38,6 +60,9 @@ namespace Vex
     template <typename T>
     Scope<T>& Scope<T>::Reset(T* data)
     {
+        if (m_Data == data)
+            return *this;
+
         Destroy();
 
         if (data)
@@ -60,22 +85,15 @@ namespace Vex
     }
 
     template <typename T>
-    Scope<T>& Scope<T>::Move(Scope<T>&& rhs)
+    template <typename U>
+        requires std::is_convertible_v<U*, T*>
+    Scope<T>& Scope<T>::Move(Scope<U>&& rhs)
     {
-        if (this == &rhs)
-            return *this;
-
         Destroy();
 
         m_Data = rhs.m_Data;
         rhs.m_Data = nullptr;
 
         return *this;
-    }
-
-    template <typename T, typename... Args>
-    Scope<T> CreateScope(Args&&... args)
-    {
-        return Scope<T>(new T(std::forward<Args>(args)...));
     }
 } // namespace Vex

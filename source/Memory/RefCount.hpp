@@ -14,9 +14,6 @@ namespace Vex
 
     struct RefCount
     {
-        RefCount() = default;
-        virtual ~RefCount() = default;
-
         RefCount(const RefCount& other) {}
         RefCount(RefCount&& rhs) noexcept { VEX_ASSERT(false, "Moving referenced object is unsafe"); }
         RefCount& operator=(const RefCount& other) { return *this; }
@@ -32,6 +29,10 @@ namespace Vex
         uint16_t GetWeakCount() { return m_ControlBlock.WeakCount; }
 
         uint32_t GetTotalPtrCount() { return m_ControlBlock.RefCount + m_ControlBlock.WeakCount; }
+
+      protected:
+        RefCount() = default;
+        virtual ~RefCount() = default;
 
       private:
         void IncRefCount() { ++m_ControlBlock.RefCount; }
