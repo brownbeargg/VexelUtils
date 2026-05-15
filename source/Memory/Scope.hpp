@@ -14,7 +14,7 @@ namespace Vex
         Scope(const Scope<T>&) = delete;
         Scope(Scope<T>&& rhs) { Move(std::move(rhs)); }
         Scope& operator=(const Scope<T>&) = delete;
-        Scope& operator=(Scope<T>&& rhs) { Move(std::move(rhs)); }
+        Scope& operator=(Scope<T>&& rhs) { return Move(std::move(rhs)); }
 
         const T& operator*() const { return *m_Data; }
         T& operator*() { return *m_Data; }
@@ -38,10 +38,13 @@ namespace Vex
     template <typename T>
     Scope<T>& Scope<T>::Reset(T* data)
     {
-        destroy();
+        Destroy();
 
-        m_Data = data;
-
+        if (data)
+        {
+            m_Data = data;
+            m_Data->IncRefCount();
+        }
         return *this;
     }
 
@@ -51,6 +54,7 @@ namespace Vex
         if (!m_Data)
             return;
 
+        m_Data->DecScopeCount();
         delete m_Data;
         m_Data = nullptr;
     }

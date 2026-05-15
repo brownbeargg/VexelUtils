@@ -70,7 +70,7 @@ namespace Vex
             return;
 
         m_Data->DecRefCount();
-        if (m_Data->GetRefCount() == 0)
+        if (m_Data->GetRefCount() == 0 && m_Data->GetScopeCount() == 0)
             delete m_Data;
 
         m_Data = nullptr;
