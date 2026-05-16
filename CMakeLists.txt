@@ -8,11 +8,31 @@ file(GLOB_RECURSE VEXELUTILS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp
 )
 
+if(WIN32)
+    file(GLOB_RECURSE VEXELUTILS_SRC_PLATFORM
+        CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Windows/*.cpp
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    file(GLOB_RECURSE VEXELUTILS_SRC_PLATFORM
+        CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Platform/MacOS/*.cpp
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    file(GLOB_RECURSE VEXELUTILS_SRC_PLATFORM
+        CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Linux/*.cpp
+    )
+else()
+    message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+endif()
+
 add_library(
     VexelUtils 
 
     STATIC
     ${VEXELUTILS_SRC}
+    ${VEXELUTILS_SRC_PLATFORM}
 )
 
 target_compile_features(
