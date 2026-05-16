@@ -9,7 +9,8 @@ namespace Vex
         Assets,
         Config,
         Save,
-        Cache
+        Cache,
+        Engine
     };
 
     class FileSystem
