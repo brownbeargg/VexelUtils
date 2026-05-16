@@ -10,7 +10,8 @@ namespace Vex
         Config,
         Save,
         Cache,
-        Engine
+        Engine,
+        Root
     };
 
     class FileSystem
@@ -32,6 +33,7 @@ namespace Vex
         static bool IsInside(const std::filesystem::path& root, const std::filesystem::path& path);
 
       private:
-        inline static std::unordered_map<RootDirectory, std::filesystem::path> s_Roots;
+        inline static std::unordered_map<RootDirectory, std::filesystem::path> s_Roots = {
+            {RootDirectory::Root, std::filesystem::current_path().root_directory()}};
     };
 } // namespace Vex
