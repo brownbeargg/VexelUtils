@@ -1,3 +1,5 @@
+#pragma once
+
 /* STREAMS */
 #include <fstream>
 #include <iomanip>
