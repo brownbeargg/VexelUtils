@@ -28,7 +28,10 @@ namespace Vex
         uint16_t GetScopeCount() { return m_ControlBlock.ScopeCount; }
         uint16_t GetWeakCount() { return m_ControlBlock.WeakCount; }
 
-        uint32_t GetTotalPtrCount() { return m_ControlBlock.RefCount + m_ControlBlock.WeakCount; }
+        uint32_t GetTotalPtrCount()
+        {
+            return m_ControlBlock.RefCount + m_ControlBlock.ScopeCount + m_ControlBlock.WeakCount;
+        }
 
       protected:
         RefCount() = default;
