@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <Vexel/Memory.hpp>
+#include <Vexel/Utils.hpp>
 
 class A : public Vex::RefCount
 {

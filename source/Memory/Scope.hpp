@@ -27,7 +27,7 @@ namespace Vex
             requires std::is_convertible_v<U*, T*>
         Scope<T>& operator=(Scope<U>&& rhs)
         {
-            Move(std::move(rhs));
+            return Move(std::move(rhs));
         }
 
         const T& operator*() const { return *m_Data; }
@@ -55,6 +55,15 @@ namespace Vex
         Scope<T>& Move(Scope<U>&& rhs);
 
         T* m_Data = nullptr;
+
+        template <typename U>
+        friend class Ref;
+
+        template <typename U>
+        friend class Scope;
+
+        template <typename U>
+        friend class Weak;
     };
 
     template <typename T>

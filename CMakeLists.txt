@@ -56,7 +56,7 @@ target_precompile_headers(
     VexelUtils
 
     PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Vexel/STL.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Vexel/Utils/STL.hpp
 )
 
 # TESTING

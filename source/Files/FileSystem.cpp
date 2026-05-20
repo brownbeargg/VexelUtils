@@ -1,7 +1,6 @@
 #include "FileSystem.hpp"
 
-#include "Vexel/Base.hpp"
-#include "Vexel/STL.hpp"
+#include "Vexel/Utils/Base.hpp"
 
 namespace Vex
 {

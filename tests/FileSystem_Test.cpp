@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <Vexel/Base.hpp>
-#include <Vexel/Files.hpp>
+#include <Vexel/Utils.hpp>
 
 TEST(FileSystem, Reads)
 {

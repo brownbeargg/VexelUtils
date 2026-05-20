@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Vexel/Base.hpp>
-#include <Vexel/STL.hpp>
+#include "Vexel/Utils/Base.hpp"
+#include "Vexel/Utils/STL.hpp"
 
 namespace Vex
 {

@@ -86,10 +86,13 @@ namespace Vex
         T* m_Data = nullptr;
 
         template <typename U>
-        friend class Weak;
+        friend class Ref;
 
         template <typename U>
-        friend class Ref;
+        friend class Scope;
+
+        template <typename U>
+        friend class Weak;
     };
 
     template <typename T>

@@ -85,6 +85,9 @@ namespace Vex
         friend class Ref;
 
         template <typename U>
+        friend class Scope;
+
+        template <typename U>
         friend class Weak;
     };
 
