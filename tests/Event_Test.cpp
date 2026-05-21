@@ -7,7 +7,7 @@ class TestEvent : public Vex::Event
   public:
     int Data;
 
-    VEX_EVENT_CLASS_TYPE(Vex::EventType::AppTick);
+    VEX_EVENT_CLASS_TYPE(Vex::EventType::AppTicked);
     VEX_EVENT_CLASS_CATEGORY(Vex::EventCategory::App);
 };
 
