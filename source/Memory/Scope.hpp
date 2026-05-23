@@ -9,7 +9,7 @@ namespace Vex
     class Weak;
 
     template <typename T>
-    class Scope
+    class Scope final
     {
       public:
         Scope() = default;

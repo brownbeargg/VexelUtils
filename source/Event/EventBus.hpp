@@ -7,7 +7,7 @@ namespace Vex
     class Event;
     enum class EventType;
 
-    class EventBus
+    class EventBus final
     {
       public:
         template <typename T>
