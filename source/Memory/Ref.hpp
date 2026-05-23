@@ -5,6 +5,9 @@
 namespace Vex
 {
     template <typename T>
+    class Scope;
+
+    template <typename T>
     class Weak;
 
     template <typename T>
@@ -49,10 +52,19 @@ namespace Vex
             return Move(std::move(rhs));
         }
 
+        explicit Ref(const Scope<T>& other) { Reset(other.m_Data); }
+        explicit Ref(Scope<T>&& rhs) { Move(Ref<T>(rhs)); }
+        Ref<T>& operator=(const Scope<T>& other) { return Reset(other.m_Data); }
+        Ref<T>& operator=(Scope<T>&& rhs) { return Move(Ref<T>(rhs)); }
+
         explicit Ref(const Weak<T>& other) { Reset(other.m_Data); }
         explicit Ref(Weak<T>&& rhs) { Move(Ref<T>(rhs)); }
         Ref<T>& operator=(const Weak<T>& other) { return Reset(other.m_Data); }
         Ref<T>& operator=(Weak<T>&& rhs) { return Move(Ref<T>(rhs)); }
+
+        bool operator==(Ref<T> other) { return m_Data == other.m_Data; }
+        bool operator==(Scope<T> other) { return m_Data == other.m_Data; }
+        bool operator==(Weak<T> other) { return m_Data == other.m_Data; }
 
         const T& operator*() const { return *m_Data; }
         T& operator*() { return *m_Data; }

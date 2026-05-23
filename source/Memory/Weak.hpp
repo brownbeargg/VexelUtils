@@ -55,6 +55,15 @@ namespace Vex
         Weak<T>& operator=(const Ref<T>& other) { return Reset(other.m_Data); }
         Weak<T>& operator=(Ref<T>&& rhs) { return Move(Weak<T>(rhs)); }
 
+        explicit Weak(const Scope<T>& other) { Reset(other.m_Data); }
+        explicit Weak(Scope<T>&& rhs) { Move(Weak<T>(rhs)); }
+        Weak<T>& operator=(const Scope<T>& other) { return Reset(other.m_Data); }
+        Weak<T>& operator=(Scope<T>&& rhs) { return Move(Weak<T>(rhs)); }
+
+        bool operator==(Ref<T> other) { return m_Data == other.m_Data; }
+        bool operator==(Scope<T> other) { return m_Data == other.m_Data; }
+        bool operator==(Weak<T> other) { return m_Data == other.m_Data; }
+
         const T& operator*() const { return *m_Data; }
         T& operator*() { return *m_Data; }
         const T* operator->() const { return m_Data; }
