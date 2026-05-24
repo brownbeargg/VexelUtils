@@ -51,6 +51,6 @@ namespace Vex
 
       private:
         EntityID m_ID = 0;
-        Weak<Ent::Registry> m_Registry = {};
+        Weak<Ent::Registry> m_Registry = nullptr;
     };
 } // namespace Vex
