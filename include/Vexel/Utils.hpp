@@ -1,5 +1,8 @@
+#pragma once
+
 #include "Vexel/Utils/Base.hpp"
 #include "Vexel/Utils/Debug.hpp"
+#include "Vexel/Utils/ECS.hpp"
 #include "Vexel/Utils/Event.hpp"
 #include "Vexel/Utils/Files.hpp"
 #include "Vexel/Utils/Memory.hpp"
