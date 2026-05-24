@@ -18,6 +18,7 @@ namespace Vex
         ~Ref() { Destroy(); }
 
         explicit Ref(T* data) { Reset(data); }
+        Ref(nullptr_t data) { Reset(data); }
 
         Ref(const Ref<T>& other) { Reset(other.m_Data); }
         Ref(Ref&& rhs) { Move(std::move(rhs)); }

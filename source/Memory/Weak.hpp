@@ -16,6 +16,7 @@ namespace Vex
         ~Weak() { Destroy(); }
 
         explicit Weak(T* data) { Reset(data); }
+        Weak(nullptr_t data) { Reset(data); }
 
         Weak(const Weak<T>& other) { Reset(other.m_Data); }
         Weak(Weak<T>&& rhs) { Move(std::move(rhs)); }

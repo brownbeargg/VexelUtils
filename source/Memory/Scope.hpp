@@ -16,6 +16,7 @@ namespace Vex
         ~Scope() { Destroy(); }
 
         explicit Scope(T* data) { Reset(data); }
+        Scope(nullptr_t data) { Reset(data); }
 
         Scope(const Scope<T>&) = delete;
         Scope(Scope<T>&& rhs) { Move(std::move(rhs)); }
