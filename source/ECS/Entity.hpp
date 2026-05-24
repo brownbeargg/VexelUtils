@@ -9,7 +9,7 @@ namespace Vex
     class Entity final
     {
       public:
-        Entity(EntityID id, Weak<Ent::Registry> registry) : m_ID(id), m_Registry(std::move(registry)) {}
+        Entity(EntityID id, Weak<Registry> registry) : m_ID(id), m_Registry(std::move(registry)) {}
 
         template <typename T>
         void AddComponent(const T& component)
@@ -51,6 +51,6 @@ namespace Vex
 
       private:
         EntityID m_ID = 0;
-        Weak<Ent::Registry> m_Registry = nullptr;
+        Weak<Registry> m_Registry = nullptr;
     };
 } // namespace Vex

@@ -14,7 +14,7 @@ struct PositionComponent
 
 TEST(ECS, AddsAndGetsAndRemoves)
 {
-    Vex::Ent::Registry reg;
+    Vex::Registry reg;
     Vex::Entity entity = {reg.CreateEntity(), Vex::Weak(&reg)};
 
     entity.AddComponent<PositionComponent>(10, 3);
