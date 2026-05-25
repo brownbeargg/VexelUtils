@@ -8,6 +8,8 @@ namespace Vex
         uint16_t ScopeCount = 0;
         uint16_t WeakCount = 0;
 
+        bool HasOwnership = true;
+
         uint16_t IncRefCount() { return ++RefCount; }
         uint16_t DecRefCount() { return --RefCount; }
         uint16_t GetRefCount() { return RefCount; }
