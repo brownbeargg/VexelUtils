@@ -7,7 +7,7 @@ namespace Vex
 {
     using EntityID = uint32_t;
 
-    class Registry : public RefCount
+    class Registry
     {
       public:
         EntityID CreateEntity() { return m_NextEntity++; }
@@ -33,7 +33,7 @@ namespace Vex
         template <typename T>
         void RemoveComponent(EntityID entity)
         {
-            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component")
+            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component");
             GetStorage<T>().Remove(entity);
         }
 
@@ -46,14 +46,14 @@ namespace Vex
         template <typename T>
         T& GetComponent(EntityID entity)
         {
-            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component")
+            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component");
             return GetStorage<T>().Get(entity);
         }
 
         template <typename T>
         const T& GetComponent(EntityID entity) const
         {
-            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component")
+            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component");
             return GetStorage<T>().Get(entity);
         }
 

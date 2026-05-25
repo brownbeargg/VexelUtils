@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Ref.hpp"
-#include "RefCount.hpp"
+#include "Memory/ControlBlock.hpp"
 
 namespace Vex
 {
     template <typename T>
     class Ref;
+
+    template <typename T>
+    class Scope;
 
     template <typename T>
     class Weak final
@@ -15,13 +17,17 @@ namespace Vex
         Weak() = default;
         ~Weak() { Destroy(); }
 
-        explicit Weak(T* data) { Reset(data); }
-        Weak(nullptr_t data) { Reset(data); }
+        explicit Weak(T* pData) { Reset(pData); }
+        Weak(nullptr_t pData) { Reset(pData); }
 
-        Weak(const Weak<T>& other) { Reset(other.m_Data); }
-        Weak(Weak<T>&& rhs) { Move(std::move(rhs)); }
-        Weak<T>& operator=(const Weak<T>& other) { return Reset(other.m_Data); }
-        Weak<T>& operator=(Weak<T>&& rhs) { return Move(std::move(rhs)); }
+        Weak(const Weak<T>& other) { Reset(other.m_pData); }
+        Weak(Weak<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Weak<T>& operator=(const Weak<T>& other) { return Reset(other.m_pData); }
+        Weak<T>& operator=(Weak<T>&& rhs) { return Move<T>(std::move(rhs)); }
+
+        // --------------------------------------------------------------------------------
+        // Convertible types
+        // --------------------------------------------------------------------------------
 
         template <typename U>
             requires std::is_convertible_v<U*, T*>
@@ -34,7 +40,7 @@ namespace Vex
             requires std::is_convertible_v<U*, T*>
         Weak(Weak<U>&& rhs)
         {
-            Move(std::move(rhs));
+            Move<U>(std::move(rhs));
         }
 
         template <typename U>
@@ -48,38 +54,62 @@ namespace Vex
             requires std::is_convertible_v<U*, T*>
         Weak<T>& operator=(Weak<U>&& rhs)
         {
-            return Move(std::move(rhs));
+            return Move<U>(std::move(rhs));
         }
 
-        explicit Weak(const Ref<T>& other) { Reset(other.m_Data); }
-        explicit Weak(Ref<T>&& rhs) { Move(Weak<T>(rhs)); }
-        Weak<T>& operator=(const Ref<T>& other) { return Reset(other.m_Data); }
-        Weak<T>& operator=(Ref<T>&& rhs) { return Move(Weak<T>(rhs)); }
+        // --------------------------------------------------------------------------------
+        // Refs
+        // --------------------------------------------------------------------------------
 
-        explicit Weak(const Scope<T>& other) { Reset(other.m_Data); }
-        explicit Weak(Scope<T>&& rhs) { Move(Weak<T>(rhs)); }
-        Weak<T>& operator=(const Scope<T>& other) { return Reset(other.m_Data); }
-        Weak<T>& operator=(Scope<T>&& rhs) { return Move(Weak<T>(rhs)); }
+        Weak(const Ref<T>& other) { Reset(other.m_pData); }
+        Weak(Ref<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Weak<T>& operator=(const Ref<T>& other) { return Reset(other.m_pData); }
+        Weak<T>& operator=(Ref<T>&& rhs) { return Move<T>(std::move(rhs)); }
 
-        bool operator==(Ref<T> other) { return m_Data == other.m_Data; }
-        bool operator==(Scope<T> other) { return m_Data == other.m_Data; }
-        bool operator==(Weak<T> other) { return m_Data == other.m_Data; }
+        // --------------------------------------------------------------------------------
+        // Scopes
+        // --------------------------------------------------------------------------------
 
-        const T& operator*() const { return *m_Data; }
-        T& operator*() { return *m_Data; }
-        const T* operator->() const { return m_Data; }
-        T* operator->() { return m_Data; }
+        Weak(const Scope<T>& other) { Reset(other.m_pData); }
+        Weak(Scope<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Weak<T>& operator=(const Scope<T>& other) { return Reset(other.m_pData); }
+        Weak<T>& operator=(Scope<T>&& rhs) { return Move<T>(std::move(rhs)); }
 
-        operator bool() const { return m_Data; }
+        // --------------------------------------------------------------------------------
+        // Operators
+        // --------------------------------------------------------------------------------
 
-        Weak<T>& Reset(T* data);
+        bool operator==(const Ref<T>& other) const { return m_pData == other.m_pData; }
+        bool operator==(const Scope<T>& other) const { return m_pData == other.m_pData; }
+        bool operator==(const Weak<T>& other) const { return m_pData == other.m_pData; }
+
+        const T& operator*() const { return *m_pData; }
+        T& operator*() { return *m_pData; }
+        const T* operator->() const { return m_pData; }
+        T* operator->() { return m_pData; }
+
+        operator bool() const { return m_pData; }
+
+        // --------------------------------------------------------------------------------
+        // Member functions
+        // --------------------------------------------------------------------------------
+
+        Ref<T> Lock() { return Ref<T>(m_pData); }
+
+        Weak<T>& Reset(T* pData);
         void Destroy();
 
-        bool Expired() { return m_Data->GetRefCount(); }
-        Ref<T> Lock() { return Ref<T>(m_Data); }
+        const T* Get() const { return m_pData; }
+        T* Get() { return m_pData; }
 
-        T* Get() { return m_Data; }
-        const T* Get() const { return m_Data; }
+        uint16_t GetRefCount() { return m_pControlBlock->RefCount; }
+        uint16_t GetScopeCount() { return m_pControlBlock->ScopeCount; }
+        uint16_t GetWeakCount() { return m_pControlBlock->WeakCount; }
+
+        uint32_t GetTotalPtrCount()
+        {
+            return m_pControlBlock->RefCount + m_pControlBlock->ScopeCount + m_pControlBlock->WeakCount;
+        }
 
         template <typename... Args>
         static Weak<T> Create(Args&&... args)
@@ -93,7 +123,8 @@ namespace Vex
         Weak<T>& Move(Weak<U>&& rhs);
 
       private:
-        T* m_Data = nullptr;
+        T* m_pData = nullptr;
+        ControlBlock* m_pControlBlock = nullptr;
 
         template <typename U>
         friend class Ref;
@@ -106,17 +137,19 @@ namespace Vex
     };
 
     template <typename T>
-    Weak<T>& Weak<T>::Reset(T* data)
+    Weak<T>& Weak<T>::Reset(T* pData)
     {
-        if (m_Data == data)
+        if (m_pData == pData)
             return *this;
 
         Destroy();
 
-        if (data)
+        if (pData)
         {
-            m_Data = data;
-            m_Data->IncWeakCount();
+            m_pData = pData;
+
+            m_pControlBlock = ControlBlock::Get(pData);
+            m_pControlBlock->IncWeakCount();
         }
 
         return *this;
@@ -125,12 +158,13 @@ namespace Vex
     template <typename T>
     void Weak<T>::Destroy()
     {
-        if (!m_Data)
+        if (!m_pData)
             return;
 
-        m_Data->DecWeakCount();
+        m_pControlBlock->DecWeakCount();
 
-        m_Data = nullptr;
+        m_pData = nullptr;
+        m_pControlBlock = nullptr;
     }
 
     template <typename T>
@@ -138,10 +172,16 @@ namespace Vex
         requires std::is_convertible_v<U*, T*>
     Weak<T>& Weak<T>::Move(Weak<U>&& rhs)
     {
+        if (this == (Weak<T>*)&rhs)
+            return *this;
+
         Destroy();
 
-        m_Data = rhs.m_Data;
-        rhs.m_Data = nullptr;
+        m_pData = rhs.m_pData;
+        rhs.m_pData = nullptr;
+
+        m_pControlBlock = rhs.m_pControlBlock;
+        rhs.m_pControlBlock = nullptr;
 
         return *this;
     }

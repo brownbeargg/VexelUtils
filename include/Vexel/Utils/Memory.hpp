@@ -1,6 +1,6 @@
 #pragma once
 
+#include "Memory/ControlBlock.hpp"
 #include "Memory/Ref.hpp"
-#include "Memory/RefCount.hpp"
 #include "Memory/Scope.hpp"
 #include "Memory/Weak.hpp"

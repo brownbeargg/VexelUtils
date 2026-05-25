@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Memory/ControlBlock.hpp"
+
 namespace Vex
 {
     template <typename T>
@@ -15,54 +17,97 @@ namespace Vex
         Scope() = default;
         ~Scope() { Destroy(); }
 
-        explicit Scope(T* data) { Reset(data); }
-        Scope(nullptr_t data) { Reset(data); }
+        explicit Scope(T* pData) { Reset(pData); }
+        Scope(nullptr_t pData) { Reset(pData); }
 
-        Scope(const Scope<T>&) = delete;
-        Scope(Scope<T>&& rhs) { Move(std::move(rhs)); }
-        Scope& operator=(const Scope<T>&) = delete;
-        Scope& operator=(Scope<T>&& rhs) { return Move(std::move(rhs)); }
+        Scope(const Scope<T>& other) { Reset(other.m_pData); }
+        Scope(Scope<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Scope<T>& operator=(const Scope<T>& other) { return Reset(other.m_pData); }
+        Scope<T>& operator=(Scope<T>&& rhs) { return Move<T>(std::move(rhs)); }
+
+        // --------------------------------------------------------------------------------
+        // Convertible types
+        // --------------------------------------------------------------------------------
+
+        template <typename U>
+            requires std::is_convertible_v<U*, T*>
+        Scope(const Scope<U>& other)
+        {
+            Reset(other.m_Data);
+        }
 
         template <typename U>
             requires std::is_convertible_v<U*, T*>
         Scope(Scope<U>&& rhs)
         {
-            Move(std::move(rhs));
+            Move<U>(std::move(rhs));
+        }
+
+        template <typename U>
+            requires std::is_convertible_v<U*, T*>
+        Scope<T>& operator=(const Scope<U>& other)
+        {
+            return Reset(other.m_Data);
         }
 
         template <typename U>
             requires std::is_convertible_v<U*, T*>
         Scope<T>& operator=(Scope<U>&& rhs)
         {
-            return Move(std::move(rhs));
+            return Move<T>(std::move(rhs));
         }
 
-        explicit Scope(const Ref<T>& other) { Reset(other.m_Data); }
-        explicit Scope(Ref<T>&& rhs) { Move(Scope<T>(rhs)); }
-        Scope<T>& operator=(const Ref<T>& other) { return Reset(other.m_Data); }
-        Scope<T>& operator=(Ref<T>&& rhs) { return Move(Scope<T>(rhs)); }
+        // --------------------------------------------------------------------------------
+        // Refs
+        // --------------------------------------------------------------------------------
 
-        explicit Scope(const Weak<T>& other) { Reset(other.m_Data); }
-        explicit Scope(Weak<T>&& rhs) { Move(Scope<T>(rhs)); }
-        Scope<T>& operator=(const Weak<T>& other) { return Reset(other.m_Data); }
-        Scope<T>& operator=(Weak<T>&& rhs) { return Move(Scope<T>(rhs)); }
+        Scope(const Ref<T>& other) { Reset(other.m_pData); }
+        Scope(Ref<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Scope<T>& operator=(const Ref<T>& other) { return Reset(other.m_pData); }
+        Scope<T>& operator=(Ref<T>&& rhs) { return Move<T>(std::move(rhs)); }
 
-        bool operator==(Ref<T> other) { return m_Data == other.m_Data; }
-        bool operator==(Scope<T> other) { return m_Data == other.m_Data; }
-        bool operator==(Weak<T> other) { return m_Data == other.m_Data; }
+        // --------------------------------------------------------------------------------
+        // Weaks
+        // --------------------------------------------------------------------------------
 
-        const T& operator*() const { return *m_Data; }
-        T& operator*() { return *m_Data; }
-        const T* operator->() const { return m_Data; }
-        T* operator->() { return m_Data; }
+        Scope(const Weak<T>& other) { Reset(other.m_pData); }
+        Scope(Weak<T>&& rhs) { Move<T>(std::move(rhs)); }
+        Scope<T>& operator=(const Weak<T> other) { return Reset(other.m_pData); }
+        Scope<T> operator=(Weak<T>&& rhs) { return Move<T>(std::move(rhs)); }
 
-        operator bool() const { return m_Data; }
+        // --------------------------------------------------------------------------------
+        // Operators
+        // --------------------------------------------------------------------------------
 
-        Scope<T>& Reset(T* data);
+        bool operator==(const Ref<T>& other) const { return m_pData == other.m_pData; }
+        bool operator==(const Scope<T>& other) const { return m_pData == other.m_pData; }
+        bool operator==(const Weak<T>& other) const { return m_pData == other.m_pData; }
+
+        const T& operator*() const { return *m_pData; }
+        T& operator*() { return *m_pData; }
+        const T* operator->() const { return m_pData; }
+        T* operator->() { return m_pData; }
+
+        operator bool() const { return m_pData; }
+
+        // --------------------------------------------------------------------------------
+        // Member functions
+        // --------------------------------------------------------------------------------
+
+        Scope<T>& Reset(T* pData);
         void Destroy();
 
-        T* Get() { return m_Data; }
-        const T* Get() const { return m_Data; }
+        const T* Get() const { return m_pData; }
+        T* Get() { return m_pData; }
+
+        uint16_t GetRefCount() { return m_pControlBlock->RefCount; }
+        uint16_t GetScopeCount() { return m_pControlBlock->ScopeCount; }
+        uint16_t GetWeakCount() { return m_pControlBlock->WeakCount; }
+
+        uint32_t GetTotalPtrCount()
+        {
+            return m_pControlBlock->RefCount + m_pControlBlock->ScopeCount + m_pControlBlock->WeakCount;
+        }
 
         template <typename... Args>
         static Scope<T> Create(Args&&... args)
@@ -75,7 +120,9 @@ namespace Vex
             requires std::is_convertible_v<U*, T*>
         Scope<T>& Move(Scope<U>&& rhs);
 
-        T* m_Data = nullptr;
+      private:
+        T* m_pData = nullptr;
+        ControlBlock* m_pControlBlock = nullptr;
 
         template <typename U>
         friend class Ref;
@@ -87,31 +134,43 @@ namespace Vex
         friend class Weak;
     };
 
+    // --------------------------------------------------------------------------------
+    // Scope function definitions
+    // --------------------------------------------------------------------------------
+
     template <typename T>
-    Scope<T>& Scope<T>::Reset(T* data)
+    Scope<T>& Scope<T>::Reset(T* pData)
     {
-        if (m_Data == data)
+        if (m_pData == pData)
             return *this;
 
         Destroy();
 
-        if (data)
+        if (pData)
         {
-            m_Data = data;
-            m_Data->IncRefCount();
+            m_pData = pData;
+
+            m_pControlBlock = ControlBlock::Get(pData);
+            m_pControlBlock->IncScopeCount();
         }
+
         return *this;
     }
 
     template <typename T>
     void Scope<T>::Destroy()
     {
-        if (!m_Data)
+        if (!m_pData)
             return;
 
-        m_Data->DecScopeCount();
-        delete m_Data;
-        m_Data = nullptr;
+        if (!m_pControlBlock->DecScopeCount())
+        {
+            ControlBlock::Destroy(m_pData);
+            delete m_pData;
+        }
+
+        m_pData = nullptr;
+        m_pControlBlock = nullptr;
     }
 
     template <typename T>
@@ -119,10 +178,16 @@ namespace Vex
         requires std::is_convertible_v<U*, T*>
     Scope<T>& Scope<T>::Move(Scope<U>&& rhs)
     {
+        if (this == (Scope<T>*)&rhs)
+            return *this;
+
         Destroy();
 
-        m_Data = rhs.m_Data;
-        rhs.m_Data = nullptr;
+        m_pData = rhs.m_pData;
+        rhs.m_pData = nullptr;
+
+        m_pControlBlock = rhs.m_pControlBlock;
+        rhs.m_pControlBlock = nullptr;
 
         return *this;
     }

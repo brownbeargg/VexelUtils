@@ -2,7 +2,7 @@
 
 #include <Vexel/Utils.hpp>
 
-class A : public Vex::RefCount
+class A
 {
   public:
     int val = 0;

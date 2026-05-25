@@ -58,7 +58,7 @@ namespace Vex
         return static_cast<EventCategory>(static_cast<int>(a) | static_cast<int>(b));
     }
 
-    class Event : public RefCount
+    class Event
     {
       public:
         bool Handled = false;

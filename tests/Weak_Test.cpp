@@ -2,7 +2,7 @@
 
 #include <Vexel/Utils.hpp>
 
-class A : public Vex::RefCount
+class A
 {
   public:
     int val = 0;
@@ -32,13 +32,13 @@ TEST(Weak, WeakCountGoesUpAndDown)
 {
     {
         Vex::Weak<A> b = Vex::Weak(a);
-        EXPECT_EQ(b->GetWeakCount(), 1);
-        EXPECT_EQ(a->GetWeakCount(), 1);
-        EXPECT_EQ(b->GetRefCount(), 1);
-        EXPECT_EQ(a->GetRefCount(), 1);
+        EXPECT_EQ(b.GetWeakCount(), 1);
+        EXPECT_EQ(a.GetWeakCount(), 1);
+        EXPECT_EQ(b.GetRefCount(), 1);
+        EXPECT_EQ(a.GetRefCount(), 1);
     }
 
-    EXPECT_EQ(a->GetWeakCount(), 0);
+    EXPECT_EQ(a.GetWeakCount(), 0);
 }
 
 TEST(Weak, Resets)
@@ -53,9 +53,9 @@ TEST(Weak, Locks)
 {
     Vex::Weak<A> b = Vex::Weak(a);
     Vex::Ref<A> c = b.Lock();
-    EXPECT_EQ(a->GetRefCount(), 2);
-    EXPECT_EQ(a->GetWeakCount(), 1);
-    EXPECT_EQ(a->GetTotalPtrCount(), 3);
+    EXPECT_EQ(a.GetRefCount(), 2);
+    EXPECT_EQ(a.GetWeakCount(), 1);
+    EXPECT_EQ(a.GetTotalPtrCount(), 3);
 }
 
 TEST(Weak, Inheritance)
