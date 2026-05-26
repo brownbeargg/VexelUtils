@@ -5,6 +5,9 @@
 namespace Vex
 {
     template <typename T>
+    class Observer;
+
+    template <typename T>
     class Ref;
 
     template <typename T>
@@ -208,6 +211,9 @@ namespace Vex
         // Operators
         // --------------------------------------------------------------------------------
 
+        bool operator==(const T* pData) const { return pData == m_pData; }
+        bool operator==(const Observer<T>& other) const { return other.m_pData == m_pData; }
+
         bool operator==(const Ref<T>& other) const { return other.m_pData == m_pData; }
         bool operator==(const Scope<T>& other) const { return other.m_pData == m_pData; }
         bool operator==(const Weak<T>& other) const { return other.m_pData == m_pData; }
@@ -282,6 +288,9 @@ namespace Vex
       private:
         T* m_pData = nullptr;
         ControlBlock* m_pControl;
+
+        template <typename U>
+        friend class Observer;
 
         template <typename U>
         friend class Ref;
