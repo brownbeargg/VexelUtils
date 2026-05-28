@@ -39,9 +39,11 @@ namespace Vex
             currentPath = currentPath.parent_path();
         }
 
+        const char* token = "Vexel.project";
+
         while (currentPath != currentPath.parent_path())
         {
-            if (std::filesystem::exists(currentPath / "Vexel.project"))
+            if (std::filesystem::exists(currentPath / token))
                 return currentPath;
 
             currentPath = currentPath.parent_path();
@@ -63,5 +65,27 @@ namespace Vex
                 return false;
 
         return true;
+    }
+
+    std::filesystem::path FileSystem::GetExecutableDir()
+    {
+        return GetExecutablePath().parent_path();
+    }
+
+    std::filesystem::path FileSystem::GetBuildDir()
+    {
+        std::filesystem::path currentPath = GetExecutableDir();
+
+        const char* token = "vexel.build";
+
+        while (currentPath != currentPath.parent_path())
+        {
+            if (std::filesystem::exists(currentPath / token))
+                return currentPath;
+
+            currentPath = currentPath.parent_path();
+        }
+
+        return {};
     }
 } // namespace Vex

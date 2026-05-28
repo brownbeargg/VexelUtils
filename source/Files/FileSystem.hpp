@@ -26,10 +26,13 @@ namespace Vex
         static std::string ReadText(RootDirectory root, const std::filesystem::path& relativePath);
 
         static const std::filesystem::path& GetRootDirectoryPath(RootDirectory root) { return s_Roots[root]; }
+
         static std::filesystem::path GetProjectRoot(const std::filesystem::path& startPath);
 
         static std::filesystem::path GetExecutablePath();
         static std::filesystem::path GetExecutableDir();
+
+        static std::filesystem::path GetBuildDir();
 
       private:
         static bool IsInside(const std::filesystem::path& root, const std::filesystem::path& path);

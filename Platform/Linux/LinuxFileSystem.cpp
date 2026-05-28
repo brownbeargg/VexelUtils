@@ -22,9 +22,4 @@ namespace Vex
 
         return std::filesystem::path(std::string(buffer, count));
     }
-
-    std::filesystem::path FileSystem::GetExecutableDir()
-    {
-        return GetExecutablePath().parent_path();
-    }
 } // namespace Vex
