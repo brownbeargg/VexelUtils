@@ -11,7 +11,9 @@ namespace Vex
         Save,
         Cache,
         Engine,
-        Root
+        Root,
+        Build,
+        Binary,
     };
 
     class FileSystem
