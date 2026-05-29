@@ -15,7 +15,7 @@ namespace Vex
         {
             spdlog::set_pattern("%^[%T:%e] %n (%l) : %v%$");
 
-            Get().m_CoreLogger = spdlog::stdout_color_mt("RANDOM");
+            Get().m_CoreLogger = spdlog::stdout_color_mt("VEXEL");
             Get().m_CoreLogger->set_level(spdlog::level::trace);
 
             Get().m_ClientLogger = spdlog::stdout_color_mt("APP");
