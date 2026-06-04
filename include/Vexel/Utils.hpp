@@ -6,4 +6,5 @@
 #include "Vexel/Utils/Event.hpp"
 #include "Vexel/Utils/Files.hpp"
 #include "Vexel/Utils/Memory.hpp"
+#include "Vexel/Utils/PrimitiveTypes.hpp"
 #include "Vexel/Utils/STL.hpp"
