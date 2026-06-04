@@ -21,12 +21,14 @@ namespace Vex
         template <typename T>
         void AddComponent(EntityID entity, const T& component)
         {
+            VEX_ASSERT(!HasComponent<T>(entity), "Entity already has component ");
             GetStorage<T>().Add(entity, component);
         }
 
         template <typename T, typename... Args>
         void AddComponent(EntityID entity, Args&&... args)
         {
+            VEX_ASSERT(!HasComponent<T>(entity), "Entity already has component ");
             GetStorage<T>().Add(entity, T(std::forward<Args>(args)...));
         }
 
@@ -46,14 +48,14 @@ namespace Vex
         template <typename T>
         T& GetComponent(EntityID entity)
         {
-            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component");
+            VEX_ASSERT(HasComponent<T>(entity), "Entity does NOT have component");
             return GetStorage<T>().Get(entity);
         }
 
         template <typename T>
         const T& GetComponent(EntityID entity) const
         {
-            VEX_ASSERT(HasComponent<T>(entity), "Entity does not have component");
+            VEX_ASSERT(HasComponent<T>(entity), "Entity does NOT have component");
             return GetStorage<T>().Get(entity);
         }
 
@@ -72,6 +74,8 @@ namespace Vex
         const ComponentStorage<T>& GetStorage() const
         {
             std::type_index type = typeid(T);
+            VEX_ASSERT(m_Storages.contains(type), "Storage does NOT contain the Component storage of this type");
+            
             return static_cast<const ComponentStorage<T>&>(*m_Storages.at(type));
         }
 

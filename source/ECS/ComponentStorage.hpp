@@ -16,7 +16,7 @@ namespace Vex
     class ComponentStorage : public IComponentStorage
     {
       public:
-        void Add(EntityID entity, const T& component);
+        void Add(EntityID entity, const T& component) { m_Components.insert_or_assign(entity, component); }
 
         void Remove(EntityID entity) override { m_Components.erase(entity); }
 
@@ -28,10 +28,4 @@ namespace Vex
       private:
         std::map<EntityID, T> m_Components;
     };
-
-    template <typename T>
-    void ComponentStorage<T>::Add(EntityID entity, const T& component)
-    {
-        m_Components.insert_or_assign(entity, component);
-    }
 } // namespace Vex
