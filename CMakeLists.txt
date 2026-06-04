@@ -46,8 +46,8 @@ target_include_directories(
     VexelUtils
 
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/Include
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source
 
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include
@@ -57,7 +57,7 @@ target_precompile_headers(
     VexelUtils
 
     PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Vexel/Utils/STL.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Include/Vexel/Utils.hpp
 )
 
 # TESTING
