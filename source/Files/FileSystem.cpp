@@ -19,11 +19,11 @@ namespace Vex
         return fullPath;
     }
 
-    std::string FileSystem::ReadText(RootDirectory root, const std::filesystem::path& relativePath)
+    std::string FileSystem::ReadFile(
+        RootDirectory root, const std::filesystem::path& relativePath, std::ios::openmode flags)
     {
         std::filesystem::path path = Resolve(root, relativePath);
-
-        std::ifstream file(path);
+        std::ifstream file(path, flags);
 
         std::stringstream ss;
         ss << file.rdbuf();

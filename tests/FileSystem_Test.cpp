@@ -9,6 +9,6 @@ TEST(FileSystem, Reads)
 
     Vex::FileSystem::Mount(Vex::RootDirectory::Assets, projectRoot / "Assets");
     std::string rPath = Vex::FileSystem::GetRootDirectoryPath(Vex::RootDirectory::Assets).string();
-    std::string text = Vex::FileSystem::ReadText(Vex::RootDirectory::Assets, "Reads.txt");
+    std::string text = Vex::FileSystem::ReadFile(Vex::RootDirectory::Assets, "Reads.txt");
     EXPECT_EQ(text == "HELLO WORLD\n", true);
 }
