@@ -25,6 +25,8 @@ namespace Vex
         std::filesystem::path path = Resolve(root, relativePath);
         std::ifstream file(path, flags);
 
+        VEX_RELEASE_ASSERT(file.is_open(), "Failed to open file at path: {0}", path.string());
+
         std::stringstream ss;
         ss << file.rdbuf();
         return ss.str();
