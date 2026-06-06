@@ -23,9 +23,19 @@ namespace Vex
         RootDirectory root, const std::filesystem::path& relativePath, std::ios::openmode flags)
     {
         std::filesystem::path path = Resolve(root, relativePath);
-        std::ifstream file(path, flags);
 
+        std::ifstream file(path, flags);
         VEX_RELEASE_ASSERT(file.is_open(), "Failed to open file at path: {0}", path.string());
+
+        std::stringstream ss;
+        ss << file.rdbuf();
+        return ss.str();
+    }
+
+    std::string FileSystem::ReadFile(const std::filesystem::path& fullpath, std::ios::openmode flags)
+    {
+        std::ifstream file(fullpath, flags);
+        VEX_RELEASE_ASSERT(file.is_open(), "Failed to open file at path: {0}", fullpath.string());
 
         std::stringstream ss;
         ss << file.rdbuf();

@@ -27,6 +27,9 @@ namespace Vex
         static std::string ReadFile(RootDirectory root, const std::filesystem::path& relativePath,
             std::ios::openmode flags = std::ios::in);
 
+        static std::string ReadFile(
+            const std::filesystem::path& fullpath, std::ios::openmode flags = std::ios::in);
+
         static const std::filesystem::path& GetRootDirectoryPath(RootDirectory root) { return s_Roots[root]; }
 
         static std::filesystem::path GetProjectRoot(const std::filesystem::path& startPath);
