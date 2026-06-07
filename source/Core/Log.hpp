@@ -39,11 +39,9 @@ namespace Vex
 #define VEX_CORE_INFO(...)  Vex::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define VEX_CORE_WARN(...)  Vex::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define VEX_CORE_ERROR(...) Vex::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define VEX_CORE_FATAL(...) Vex::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 
 #define VEX_TRACE(...) Vex::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define VEX_INFO(...)  Vex::Log::GetClientLogger()->info(__VA_ARGS__)
 #define VEX_WARN(...)  Vex::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define VEX_ERROR(...) Vex::Log::GetClientLogger()->error(__VA_ARGS__)
-#define VEX_FATAL(...) Vex::Log::GetClientLogger()->fatal(__VA_ARGS__)
 // clang-format on
