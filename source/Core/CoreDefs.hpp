@@ -13,3 +13,9 @@
     }
 
 #define VEX_BIT(x) (1 << x)
+
+#if defined(NDEBUG)
+    #define VEX_RELEASE 1
+#else
+    #define VEX_DEBUG 1
+#endif
