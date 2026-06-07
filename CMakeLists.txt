@@ -35,6 +35,13 @@ add_library(
     ${VEXELUTILS_SRC_PLATFORM}
 )
 
+target_compile_definitions(VexelUtils
+    $<$<CONFIG:Debug>:VEX_DEBUG>
+    $<$<CONFIG:RelWithDebInfo>:VEX_DEBUG>
+    $<$<CONFIG:Release>:VEX_RELEASE>
+    $<$<CONFIG:MinSizeRel>:VEX_RELEASE>
+)
+
 target_compile_features(
     VexelUtils
 
