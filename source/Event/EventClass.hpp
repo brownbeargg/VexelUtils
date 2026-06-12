@@ -9,23 +9,23 @@ namespace Vex
     {
         None = 0,
 
-        AppTicked = VEX_BIT(1),
-        AppUpdated = VEX_BIT(2),
-        AppRendered = VEX_BIT(3),
+        AppTicked,
+        AppUpdated,
+        AppRendered,
 
-        WindowClosed = VEX_BIT(4),
-        WindowResized = VEX_BIT(5),
-        WindowFocused = VEX_BIT(6),
-        WindowLostFocus = VEX_BIT(7),
-        WindowMoved = VEX_BIT(8),
+        WindowClosed,
+        WindowResized,
+        WindowFocused,
+        WindowLostFocus,
+        WindowMoved,
 
-        KeyPressed = VEX_BIT(9),
-        KeyReleased = VEX_BIT(10),
+        KeyPressed,
+        KeyReleased,
 
-        MouseButtonPressed = VEX_BIT(11),
-        MouseButtonReleased = VEX_BIT(12),
-        MouseMoved = VEX_BIT(13),
-        MouseScrolled = VEX_BIT(14)
+        MouseButtonPressed,
+        MouseButtonReleased,
+        MouseMoved,
+        MouseScrolled
     };
 
     constexpr EventType operator&(EventType a, EventType b)
