@@ -11,6 +11,8 @@ namespace Vex
 
     void EventBus::Dispatch()
     {
+        SwapQueues();
+
         for (Scope<Event>& event : m_Queue)
         {
             auto it = m_Observers.find(event->GetType());
@@ -22,7 +24,7 @@ namespace Vex
                 callback(*event);
         }
 
-        ClearQueue();
+        m_FrontQueue.clear();
     }
 
     void EventBus::DispatchImidiate(Scope<Event> event)

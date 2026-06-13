@@ -29,9 +29,14 @@ namespace Vex
         void ClearQueue() { m_Queue.clear(); }
 
       private:
+        void SwapQueues() { std::swap(m_Queue, m_FrontQueue); }
+
+      private:
         using EventCallback = std::function<void(Event&)>;
 
         std::unordered_map<EventType, std::vector<EventCallback>> m_Observers;
+
         std::vector<Scope<Event>> m_Queue;
+        std::vector<Scope<Event>> m_FrontQueue;
     };
 } // namespace Vex
