@@ -13,7 +13,7 @@ namespace Vex
     {
         SwapQueues();
 
-        for (Scope<Event>& event : m_Queue)
+        for (Scope<Event>& event : m_FrontQueue)
         {
             auto it = m_Observers.find(event->GetType());
 
