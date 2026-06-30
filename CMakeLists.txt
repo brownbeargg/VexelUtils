@@ -42,6 +42,10 @@ target_compile_features(
         cxx_std_20
 )
 
+if(MSVC)
+    target_compile_options(VexelUtils PUBLIC /utf-8)
+endif()
+
 target_include_directories(
     VexelUtils
 
