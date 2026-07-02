@@ -18,6 +18,7 @@ namespace Vex
         WindowFocused,
         WindowLostFocus,
         WindowMoved,
+        WindowMinimized,
 
         KeyPressed,
         KeyReleased,
